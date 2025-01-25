@@ -35,5 +35,8 @@ Once you have Deno installed, you can clone this repository and run the followin
 ```bash
 deno task run
 ```
-In your browser, open http://localhost:3000 to see the new application running.
+In your browser, open http://localhost:36911 to see the application running.
 
+## API Documentation
+
+API documentation is bundled with the server and can be accessed by visiting http://localhost:36911/api

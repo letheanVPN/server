@@ -38,8 +38,8 @@ jobs:
       - name: Run linter
         run: deno lint
 
-#      - name: Run tests
-#        run: deno task test
+      - name: Run tests
+        run: deno task test
 
 #      - name: Install Danet CLI
 #        run: deno install --global --allow-read --allow-write --allow-run --allow-env -n danet jsr:@danet/cli
