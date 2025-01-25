@@ -10,9 +10,9 @@ name: Run tests and Deploy to Deno Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main,1-refactor-server-to-deno-v2]
   pull_request:
-    branches: [main]
+    branches: [main,1-refactor-server-to-deno-v2]
 
 permissions:
   contents: read
