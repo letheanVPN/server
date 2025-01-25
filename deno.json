@@ -1,0 +1,37 @@
+{
+  "lint": {
+    "rules": {
+      "exclude": [
+        "require-await"
+      ]
+    }
+  },
+  "fmt": {
+    "options": {
+      "singleQuote": true
+    }
+  },
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "imports": {
+    "@danet/core": "jsr:@danet/core@2",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "@danet/swagger": "jsr:@danet/swagger@2",
+    "@std/assert": "jsr:@std/assert@1.0.6",
+    "@std/testing": "jsr:@std/testing@1.0.3"
+  },
+  "tasks": {
+    "run": "deno run -A --allow-env run.ts",
+    "dev": "deno run --watch -A run.ts",
+    "build": "deno compile -A run.ts",
+    "test": "deno test -A --unstable spec",
+    "build-all": "deno task build-amd-win && deno task build-amd-mac && deno task build-amd-linux && deno task build-arm-mac && deno task build-arm-linux",
+    "build-amd-win": "deno compile --target x86_64-pc-windows-msvc --include $PWD/src/include/* -o $PWD/build/amd/win/server.exe -A run.ts",
+    "build-amd-mac": "deno compile --target x86_64-apple-darwin --include $PWD/src/include/* -o $PWD/build/amd/mac/server -A run.ts",
+    "build-amd-linux": "deno compile --target x86_64-unknown-linux-gnu --include $PWD/src/include/* -o $PWD/build/amd/lin/server -A run.ts",
+    "build-arm-mac": "deno compile --target aarch64-apple-darwin --include $PWD/src/include/* -o $PWD/build/arm/mac/server -A run.ts",
+    "build-arm-linux": "deno compile --target aarch64-unknown-linux-gnu --include $PWD/src/include/* -o $PWD/build/arm/lin/server -A run.ts"
+  }
+}
