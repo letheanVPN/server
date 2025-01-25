@@ -2,7 +2,7 @@ import { join } from "@std/path/join";
 import { dirname } from "@std/path/dirname";
 import { ensureDirSync  } from "@std/fs/ensure-dir";
 import { Injectable } from '@danet/core';
-import DirEntry = Deno.DirEntry;
+import _DirEntry = Deno.DirEntry;
 
 /**
  * @class
@@ -12,11 +12,8 @@ import DirEntry = Deno.DirEntry;
 export class FsLocalService {
     /**
      * Return a system path to the Lethean folder
-     *
-     * @param pathname
-     * @returns {string}
      */
-    path(pathname: any): string {
+    path(pathname: string|string[]): string {
         if (pathname == undefined) {
             return Deno.cwd();
         }
@@ -36,63 +33,43 @@ export class FsLocalService {
 
     /**
      * Read a storage from the Lethean folder
-     *
-     * @openapi
-     * /storage/write:
-     * post:
-     *    description: Reads a storage from the storage
-     *
-     * @returns {string} | false
-     * @param path
-     *
      */
     read(path: string): string | false {
         try {
             return Deno.readTextFileSync(this.path(path)) as string;
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
     }
 
     /**
      * Checks if a directory exists
-     *
-     * @returns {boolean}
-     * @param path
      */
     isDir(path: string): boolean {
         if (path.length == 0) return false;
 
         try {
             return Deno.statSync(this.path(path)).isDirectory;
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
     }
 
     /**
      * Checks if a storage exists
-     *
-     * @returns {boolean}
-     * @param path
      */
     isFile(path: string): boolean {
         if (path.length == 0) return false;
 
         try {
             return Deno.statSync(this.path(path)).isFile;
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
     }
 
     /**
      *  List all files in a directory  (recursive)
-     *
-     *  @returns {string[]}
-     *  @example
-     *   ClientService.list( "./")
-     * @param path
      */
     list(path: string): string[] {
         const ret = [];
@@ -107,12 +84,12 @@ export class FsLocalService {
                 }
             }
             return ret;
-        } catch (e) {
+        } catch (_e) {
             return [];
         }
     }
 
-    detailedList(path: string): DirEntry[] {
+    detailedList(path: string): _DirEntry[] {
         const ret = [];
         try {
             for (
@@ -123,24 +100,20 @@ export class FsLocalService {
                 ret.push(dirEntry);
             }
             return ret;
-        } catch (e) {
+        } catch (_e) {
             return [];
         }
     }
 
     /**
      * Write to the Lethean data folder
-     *
-     * @returns boolean
-     * @param filepath string
-     * @param data string
      */
     write(filepath: string, data: string) {
         try {
             this.ensureDir(dirname(filepath));
 
             Deno.writeTextFileSync(filepath, data);
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
 
@@ -149,13 +122,11 @@ export class FsLocalService {
 
     /**
      * Makes sure the directory structure is in place for path
-     *
-     * @param {string} path relative path to the Lethean folder
      */
     ensureDir(path: string) {
         try {
             ensureDirSync(this.path(path));
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
         return true;
@@ -163,9 +134,6 @@ export class FsLocalService {
 
     /**
      * Delete a storage
-     *
-     * @param filepath string
-     * @param recursive
      */
     delete(filepath: string, recursive = true) {
         try {
@@ -176,7 +144,7 @@ export class FsLocalService {
             }
 
             Deno.removeSync(delPath, { recursive });
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
         return true;

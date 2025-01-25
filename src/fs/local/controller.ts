@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@danet/core';
 import {FsLocalService} from "./service.ts";
 import { ReturnedType, Tag } from '@danet/swagger/decorators';
-import {ReqFilePath, ResDirListDetailed} from "./interfaces.ts";
+import {ReqFilePath} from "./interfaces.ts";
 
 
 @Tag( "Input/Output" )
@@ -71,7 +71,7 @@ export class FsLocalController {
      * @returns {boolean}
      */
     @Post("is-dir")
-    isDir(@Body() body: {path:string}): {path: String, result: Boolean} {
+    isDir(@Body() body: {path:string}): {path: string, result: boolean} {
         return {
             path: body.path,
             result: this.fileSystemService.isDir(body.path)
