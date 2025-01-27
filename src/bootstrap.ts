@@ -1,4 +1,5 @@
 import '@std/dotenv/load';
+import { dirname } from "jsr:@std/path";
 import { AppModule } from './app.module.ts';
 import { DanetApplication } from '@danet/core';
 import { loggerMiddleware } from './logger.middleware.ts';
@@ -7,8 +8,7 @@ export const bootstrap = async () => {
   const application = new DanetApplication();
   await application.init(AppModule);
 
-
-  const staticAssetsPath = `${import.meta.dirname}/include`;
+  const staticAssetsPath = `${dirname(import.meta.dirname?import.meta.dirname:Deno.cwd())}/include`;
   application.useStaticAssets(staticAssetsPath);
   const spec = new SpecBuilder()
     .setTitle('Todo')
