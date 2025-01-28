@@ -29,7 +29,7 @@ export class ProcessController  {
      */
     @Post("add")
     addProcess(@Body() body: ProcessRegister) {
-        return this.process.add(body.key, body.command);
+        return this.process.add(body.key, [body.command]);
     }
 
 

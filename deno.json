@@ -26,7 +26,7 @@
     "@std/testing": "jsr:@std/testing@1.0.3"
   },
   "tasks": {
-    "run": "deno run -A --allow-env run.ts",
+    "run": "deno run -A run.ts",
     "dev": "deno run --watch -A run.ts",
     "build": "deno compile --include $PWD/include/* -o $PWD/build/server -A  run.ts",
     "test": "deno test -A --unstable src",
