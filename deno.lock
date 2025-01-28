@@ -10,9 +10,11 @@
     "jsr:@hono/hono@4.6.3": "4.6.3",
     "jsr:@std/assert@1.0.6": "1.0.6",
     "jsr:@std/assert@^1.0.6": "1.0.6",
+    "jsr:@std/crypto@^1.0.3": "1.0.3",
     "jsr:@std/data-structures@^1.0.4": "1.0.6",
     "jsr:@std/dotenv@0.225.2": "0.225.2",
     "jsr:@std/dotenv@~0.225.3": "0.225.3",
+    "jsr:@std/encoding@*": "1.0.6",
     "jsr:@std/fmt@0.223.0": "0.223.0",
     "jsr:@std/fs@1.0.4": "1.0.4",
     "jsr:@std/fs@^1.0.10": "1.0.10",
@@ -26,6 +28,7 @@
     "jsr:@std/testing@1.0.3": "1.0.3",
     "npm:awesome-phonenumber@7.1.0": "7.1.0",
     "npm:handlebars@4.7.7": "4.7.7",
+    "npm:openpgp@*": "6.0.1",
     "npm:path-to-regexp@6.2.1": "6.2.1"
   },
   "jsr": {
@@ -73,6 +76,9 @@
         "jsr:@std/internal"
       ]
     },
+    "@std/crypto@1.0.3": {
+      "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
+    },
     "@std/data-structures@1.0.6": {
       "integrity": "76a7fd8080c66604c0496220a791860492ab21a04a63a969c0b9a0609bbbb760"
     },
@@ -81,6 +87,9 @@
     },
     "@std/dotenv@0.225.3": {
       "integrity": "a95e5b812c27b0854c52acbae215856d9cce9d4bbf774d938c51d212711e8d4a"
+    },
+    "@std/encoding@1.0.6": {
+      "integrity": "ca87122c196e8831737d9547acf001766618e78cd8c33920776c7f5885546069"
     },
     "@std/fmt@0.223.0": {
       "integrity": "6deb37794127dfc7d7bded2586b9fc6f5d50e62a8134846608baf71ffc1a5208"
@@ -140,6 +149,9 @@
     "neo-async@2.6.2": {
       "integrity": "sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw=="
     },
+    "openpgp@6.0.1": {
+      "integrity": "sha512-3lReDKjgWsKFArZT4Y/yj7/Q0q6/VhXarn4WqKEkyiBWckNjrThSGoB1t0IKo3Ke0ClvBpyQfTwumkGUkxOwww=="
+    },
     "path-to-regexp@6.2.1": {
       "integrity": "sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw=="
     },
@@ -163,6 +175,7 @@
       "jsr:@danet/core@2",
       "jsr:@danet/swagger@2",
       "jsr:@std/assert@1.0.6",
+      "jsr:@std/crypto@^1.0.3",
       "jsr:@std/dotenv@~0.225.3",
       "jsr:@std/fs@^1.0.10",
       "jsr:@std/path@^1.0.8",
