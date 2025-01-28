@@ -62,7 +62,7 @@ export class ProcessManager  {
             }
 
             if (this.request.stdErr) {
-                //@ts-ignore
+                //@ts-ignore j
                 for await (const line of readLines(process.stderr)) {
                     if (line.trim()) {
                         console.error(line.toString());
@@ -76,8 +76,8 @@ export class ProcessManager  {
 
             //  super.emit("end", 0);
             return process;
-        } catch (e) {
-            console.log(e);
+        } catch (_e) {
+
             //e.preventDefault();
         }
     }
