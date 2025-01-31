@@ -1,0 +1,16 @@
+{
+  "command": {
+    "start": {
+      "description": "Starts Lethean server, defaulted to localhost:36911"
+    }
+  },
+  "help": {
+    "no-command": "Run \"server help\" for more information, or visit our website for guides: https://lt.hn/en/server"
+  },
+  "option": {
+    "debug": "Turns on debugging mode",
+    "dev": "Turn on Developer Mode (only works running from non compiled source)",
+    "port-listen": "Port to listen on.",
+    "log-level": "Logging level, default to info, options: debug, info, warn, error"
+  }
+}

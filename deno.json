@@ -32,7 +32,7 @@
   },
   "tasks": {
     "run": "deno run -A run.ts",
-    "dev": "deno run --watch -A run.ts",
+    "dev": "DEV=1 deno run --watch -A run.ts",
     "build": "deno compile --include $PWD/include/* -o $PWD/build/server -A  run.ts",
     "test": "deno test -A --unstable src",
     "build-all": "deno task build-amd-win && deno task build-amd-mac && deno task build-amd-linux && deno task build-arm-mac && deno task build-arm-linux",
