@@ -1,4 +1,5 @@
 {
+  "version": "0.0.2",
   "lint": {
     "rules": {
       "exclude": [
@@ -16,6 +17,8 @@
     "emitDecoratorMetadata": true
   },
   "imports": {
+    "@cliffy/ansi": "jsr:@cliffy/ansi@^1.0.0-rc.7",
+    "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.7",
     "@danet/core": "jsr:@danet/core@2",
     "@std/crypto": "jsr:@std/crypto@^1.0.3",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
@@ -23,11 +26,13 @@
     "@std/assert": "jsr:@std/assert@1.0.6",
     "@std/fs": "jsr:@std/fs@^1.0.10",
     "@std/path": "jsr:@std/path@^1.0.8",
-    "@std/testing": "jsr:@std/testing@1.0.3"
+    "@std/testing": "jsr:@std/testing@1.0.3",
+    "i18next": "npm:i18next@^24.2.2",
+    "i18next-fs-backend": "npm:i18next-fs-backend@^2.6.0"
   },
   "tasks": {
-    "run": "deno run -A --allow-env run.ts",
-    "dev": "deno run --watch -A run.ts",
+    "run": "deno run -A run.ts",
+    "dev": "DEV=1 deno run --watch -A run.ts",
     "build": "deno compile --include $PWD/include/* -o $PWD/build/server -A  run.ts",
     "test": "deno test -A --unstable src",
     "build-all": "deno task build-amd-win && deno task build-amd-mac && deno task build-amd-linux && deno task build-arm-mac && deno task build-arm-linux",
@@ -35,6 +40,7 @@
     "build-amd-mac": "deno compile --target x86_64-apple-darwin --include $PWD/include/* -o $PWD/build/amd/mac/server -A run.ts",
     "build-amd-linux": "deno compile --target x86_64-unknown-linux-gnu --include $PWD/include/* -o $PWD/build/amd/lin/server -A run.ts",
     "build-arm-mac": "deno compile --target aarch64-apple-darwin --include $PWD/include/* -o $PWD/build/arm/mac/server -A run.ts",
-    "build-arm-linux": "deno compile --target aarch64-unknown-linux-gnu --include $PWD/include/* -o $PWD/build/arm/lin/server -A run.ts"
+    "build-arm-linux": "deno compile --target aarch64-unknown-linux-gnu --include $PWD/include/* -o $PWD/build/arm/lin/server -A run.ts",
+    "bump-version": "deno run -A bump-version.ts"
   }
 }
