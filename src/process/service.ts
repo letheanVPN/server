@@ -31,9 +31,12 @@ export class ProcessService {
      * Runs and returns a process output
      */
     async run(command: string, args?: string[]){
-        //this.add(command, args)
-        ProcessService.process[command] = new Deno.Command(command, {args: args})
-        return await ProcessService.process[command].output()
+        this.add(command, args)
+        const { code, stdout, stderr } = await ProcessService.process[command].output()
+        if (code === 0) {
+            this.remove(command);
+        }
+        return { code, stdout, stderr }
 
     }
 
@@ -41,7 +44,6 @@ export class ProcessService {
      * Starts a long-running process
      */
     start(command: string, args?: string[]){
-        console.log('Adding process', command)
         if(ProcessService.process[command]){
             return true
         }
@@ -51,7 +53,6 @@ export class ProcessService {
     }
 
     add(command: string, args: string[] = []){
-        console.log('Adding process', command)
         ProcessService.process[command] = new Deno.Command(command, {args: args})
     }
 
@@ -62,7 +63,7 @@ export class ProcessService {
     /**
      * Sends a force quit to the src
      */
-    public kill(key: string) {
+    public remove(key: string) {
         if (!ProcessService.process[key]) {
             throw new Error(`Can't find process ${key}`);
         }
