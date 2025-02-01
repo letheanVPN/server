@@ -1,1 +1,7 @@
-{}
+{
+    "command": {
+        "start": {
+            "description": "Inicia el servidor Lethean, configurado por defecto a localhost:36911"
+        }
+    }
+}
