@@ -3,5 +3,8 @@
         "start": {
             "description": "Inicia el servidor Lethean, configurado por defecto a localhost:36911"
         }
+    },
+    "help": {
+        "no-command": "Ejecuta \"server help\" para más información, o visita nuestro sitio web para guías: https://lt.hn/es/server"
     }
 }
