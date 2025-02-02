@@ -7,8 +7,8 @@ import {FsLocalService} from "../fs/local/service.ts";
 const denoConfig = JSON.parse(Deno.readTextFileSync('deno.json'));
 const currentVersion = denoConfig.version;
 
-const process = new ProcessService();
-const processManager = new ProcessManager()
+// const process = new ProcessService();
+// const processManager = new ProcessManager()
 const fileManager = new FsLocalService()
 
 Deno.test("ProcessService.run('build/server -V')", async () => {

@@ -20,6 +20,27 @@ export class ProcessController  {
     //     return { code, out: new TextDecoder().decode(stdout), error: new TextDecoder().decode(stderr) };
     // }
 
+    // for (const arg in args) {
+    //     //     if (arg === "igd") {
+    //     //         continue;
+    //     //     }
+    //     //     cmdArgs.push(args[arg]);
+    //     //     // cmdArgs.push(
+    //     //     //     "--" + arg.replace(/([A-Z])/g, (x) => "-" + x.toLowerCase()) +
+    //     //     //     (args[arg].length > 1 ? `=${args[arg]}` : ""),
+    //     //     // );
+    //     // }
+    //
+    //     // if(!options){
+    //     //     // options = {
+    //     //     //     key: 'test',
+    //     //     //     command: cmdArgs,
+    //     //     //     stdErr: (stdErr: unknown) => console.log(stdErr),
+    //     //     //     stdIn: (stdIn: unknown) => console.log(stdIn),
+    //     //     //     stdOut: (stdOut: unknown) => console.log(stdOut)
+    //     //     // } as ProcessRequest;
+    //     // }
+
     // @Post("add")
     // addProcess(@Body() body: ProcessRegister) {
     //     return this.process.add(body.key, [body.command]);
