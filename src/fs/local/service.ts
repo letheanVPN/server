@@ -149,4 +149,11 @@ export class FsLocalService {
         }
         return true;
     }
+
+    extension(name: string): string {
+        if (Deno.build.os === "windows") {
+            return name+".exe";
+        }
+        return name;
+    }
 }

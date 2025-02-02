@@ -8,6 +8,14 @@ export interface ProcessRequest {
   stdErr: object | undefined;
 }
 
+export interface ProcessInfo {
+    command: string;
+    args: string[];
+    time_added: number;
+    time_started: number;
+    time_stopped: number;
+}
+
 export class ProcessRequestRemove {
   @ApiProperty()
   key!: string;

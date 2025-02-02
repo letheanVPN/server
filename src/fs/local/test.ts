@@ -39,18 +39,18 @@ Deno.test("ClientService.isDir", async () => {
     );
 });
 
-// Deno.test("ClientService.isFile", async () => {
-//     assertEquals(
-//         filesystem.isFile("/LICENCE"),
-//         true,
-//         `Put the EUPL-1.2 licence back where you found it, ${
-//             join(Deno.cwd(), "LICENCE")
-//         } `,
-//     );
-// });
+Deno.test("ClientService.isFile", async () => {
+    assertEquals(
+        filesystem.isFile("LICENSE"),
+        true,
+        `Put the EUPL-1.2 licence back where you found it, ${
+            join(Deno.cwd(), "LICENSE")
+        } `,
+    );
+});
 
 Deno.test("ClientService.write", async () => {
-    const filePath = "test.txt";
+    const filePath = "build/test.txt";
     const fileContent = "Hello World";
 
     assertEquals(
@@ -61,11 +61,11 @@ Deno.test("ClientService.write", async () => {
 });
 
 Deno.test("ClientService.delete", async () => {
-    assertEquals(filesystem.delete("test.txt"), true, "File not deleted");
+    assertEquals(filesystem.delete("build/test.txt"), true, "File not deleted");
 });
 
 Deno.test("ClientService.read", async () => {
-    const filePath = "test.txt";
+    const filePath = "build/test.txt";
     const fileContent = "Hello World";
 
     assertEquals(filesystem.write(filePath, fileContent), true);

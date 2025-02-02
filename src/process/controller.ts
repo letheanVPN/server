@@ -14,50 +14,53 @@ import {ProcessService} from "./service.ts";
 export class ProcessController  {
     constructor(private process: ProcessService) {}
 
-    /**
-     * Run a src
-     */
-    @Post("run")
-    async runProcess(@Body() body: ProcessRegister) {
-        const { code, stdout, stderr } = await this.process.run(body.command);
-        return { code, out: new TextDecoder().decode(stdout), error: new TextDecoder().decode(stderr) };
-    }
+    // @Post("run")
+    // async runProcess(@Body() body: ProcessRegister) {
+    //     const { code, stdout, stderr } = await this.process.run(body.command);
+    //     return { code, out: new TextDecoder().decode(stdout), error: new TextDecoder().decode(stderr) };
+    // }
+
+    // for (const arg in args) {
+    //     //     if (arg === "igd") {
+    //     //         continue;
+    //     //     }
+    //     //     cmdArgs.push(args[arg]);
+    //     //     // cmdArgs.push(
+    //     //     //     "--" + arg.replace(/([A-Z])/g, (x) => "-" + x.toLowerCase()) +
+    //     //     //     (args[arg].length > 1 ? `=${args[arg]}` : ""),
+    //     //     // );
+    //     // }
+    //
+    //     // if(!options){
+    //     //     // options = {
+    //     //     //     key: 'test',
+    //     //     //     command: cmdArgs,
+    //     //     //     stdErr: (stdErr: unknown) => console.log(stdErr),
+    //     //     //     stdIn: (stdIn: unknown) => console.log(stdIn),
+    //     //     //     stdOut: (stdOut: unknown) => console.log(stdOut)
+    //     //     // } as ProcessRequest;
+    //     // }
+
+    // @Post("add")
+    // addProcess(@Body() body: ProcessRegister) {
+    //     return this.process.add(body.key, [body.command]);
+    // }
+
+    // @Post("start")
+    // startProcess(@Body() body: ProcessRequestStart) {
+    //     return this.process.startProcess(body.key);
+    // }
+
+    // @Post("stop")
+    // stopProcess(@Body() body: ProcessRequestStop) {
+    //     return this.process.stopProcess(body.key);
+    // }
 
 
-    /**
-     * Add a src to src registry
-     */
-    @Post("add")
-    addProcess(@Body() body: ProcessRegister) {
-        return this.process.add(body.key, [body.command]);
-    }
-
-
-    /**
-     * Start a src in the src registry
-     */
-    @Post("start")
-    startProcess(@Body() body: ProcessRequestStart) {
-        return this.process.startProcess(body.key);
-    }
-
-    /**
-     * Stop a src in the src registry
-     */
-    @Post("stop")
-    stopProcess(@Body() body: ProcessRequestStop) {
-        return this.process.stopProcess(body.key);
-    }
-
-
-    /**
-     * Kill a src in the src registry
-     * @param {ProcessKillDTO} body
-     */
-    @Post("kill")
-    killProcess(@Body() body: ProcessRequestRemove) {
-        return this.process.kill(body.key);
-    }
+    // @Post("kill")
+    // killProcess(@Body() body: ProcessRequestRemove) {
+    //     return this.process.kill(body.key);
+    // }
 
 
 

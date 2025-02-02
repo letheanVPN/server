@@ -1,0 +1,81 @@
+name: Build and Release
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+jobs:
+  compile-and-release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno task build-all
+      - name: AMD Linux
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-amd64
+          path: ${{ github.workspace }}/build/amd/lin/server
+      - name: ARM Linux
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-arm64
+          path: ${{ github.workspace }}/build/arm/lin/server
+      - name: AMD Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-amd64
+          path: ${{ github.workspace }}/build/amd/win/server.exe
+      - name: Macos Intel
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-amd64
+          path: ${{ github.workspace }}/build/amd/mac/server
+      - name: Macos ARM
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-arm64
+          path: ${{ github.workspace }}/build/arm/mac/server
+      - name: Macos ARM Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/build/arm/mac/server
+          asset_name: macos-arm64
+          tag: ${{ github.ref }}
+      - name: Macos Intel Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/build/amd/mac/server
+          asset_name: macos-amd64
+          tag: ${{ github.ref }}
+      - name: Windows Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/build/amd/win/server.exe
+          asset_name: windows-amd64
+          tag: ${{ github.ref }}
+      - name: Linux AMD Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/build/amd/lin/server
+          asset_name: linux-amd64
+          tag: ${{ github.ref }}
+      - name: Linux ARM Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/build/arm/lin/server
+          asset_name: linux-arm64
+          tag: ${{ github.ref }}
