@@ -31,8 +31,8 @@
     "i18next-fs-backend": "npm:i18next-fs-backend@^2.6.0"
   },
   "tasks": {
-    "run": "deno run -A run.ts",
-    "dev": "DEV=1 deno run --watch -A run.ts",
+    "run": "deno run -A run.ts start",
+    "dev": "DEV=1 deno run --watch -A run.ts start",
     "build": "deno compile --include $PWD/include/* -o $PWD/build/server -A  run.ts",
     "test": "deno test -A --unstable --parallel src",
     "build-all": "deno task build-amd-win && deno task build-amd-mac && deno task build-amd-linux && deno task build-arm-mac && deno task build-arm-linux",
