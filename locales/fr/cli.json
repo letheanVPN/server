@@ -1,1 +1,16 @@
-{}
+{
+    "option": {
+        "debug": "Activer le mode débug",
+        "dev": "Activer le Mode Développeur (fonctionne seulement si exécuté depuis une source non compilée)",
+        "port-listen": "Port à l'écoute.",
+        "log-level": "Niveau de traçage, par défaut: info. Valeurs possibles: debug, info, warn, error"
+    },
+    "command": {
+        "start": {
+            "description": "Démarre le serveur Lethean, par défaut à l'adresse localhost:36911"
+        }
+    },
+    "help": {
+        "no-command": "Pour plus d'informations, exécuter la commande \"server help\" ou consulter notre site web: https://lt.hn/fr/server"
+    }
+}
