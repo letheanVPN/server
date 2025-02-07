@@ -42,6 +42,7 @@
     "jsr:@std/text@~1.0.7": "1.0.10",
     "npm:@anatine/zod-openapi@2.2.6": "2.2.6_openapi3-ts@4.4.0_zod@3.23.8",
     "npm:awesome-phonenumber@7.1.0": "7.1.0",
+    "npm:fflate@0.8": "0.8.2",
     "npm:handlebars@4.7.7": "4.7.7",
     "npm:i18next-fs-backend@^2.6.0": "2.6.0",
     "npm:i18next@^24.2.2": "24.2.2",
@@ -246,6 +247,9 @@
     },
     "awesome-phonenumber@7.1.0": {
       "integrity": "sha512-i/pC5xvaNVrduufGtnw8O+abLWq70wd6YutiPYR2NqrnwtjBMk7rG/vJTktnAivSok+ZqlkFZzuVICgObpQi4w=="
+    },
+    "fflate@0.8.2": {
+      "integrity": "sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A=="
     },
     "handlebars@4.7.7": {
       "integrity": "sha512-aAcXm5OAfE/8IXkcZvCepKU3VzW1/39Fb5ZuqMtgI/hT8X2YgoMvBY5dLhq/cpOvw7Lk1nK/UF71aLG/ZnVYRA==",
