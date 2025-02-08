@@ -1,10 +1,10 @@
-// appium.test.ts (Final Version)
+// src/servers/test.ts
 import { Browser } from 'npm:webdriverio@^8.27.0';
 import { assertEquals, assert } from '@std/assert';
-import { DevicesAppiumService } from "./service.ts";
-import { DevicesAndroidService } from "../android/service.ts";
-import { join } from "@std/path/join";
-import { delay } from "@std/async/delay";
+import { ServersAppiumService } from "./appium.ts"; // Correct import
+import { DeviceService } from "../devices/service.ts"; // Import DeviceService
+import { join } from "jsr:@std/path";
+import { delay } from "jsr:@std/async/delay";
 
 const capabilities = {
     platformName: 'Android',
@@ -18,9 +18,9 @@ const capabilities = {
 };
 
 let driver: Browser | undefined;
-const androidService = new DevicesAndroidService();
+const deviceService = new DeviceService(); // Create DeviceService instance
 const testDownloadPath = join(Deno.cwd(), "test_adb");
-const appiumService = new DevicesAppiumService(androidService, testDownloadPath);
+const appiumService = new ServersAppiumService(deviceService, testDownloadPath); // Pass DeviceService
 
 Deno.test({
     name: 'Press Home Button (Appium)',
@@ -33,7 +33,7 @@ Deno.test({
 
             await delay(5000);
 
-            const devices = androidService.devices();
+            const devices = await deviceService.listDevices("android");
             const serial = Object.keys(devices)[0];
             driver = await appiumService.getDriver(capabilities, serial);
             assert(driver, "Driver should be defined if Appium connected.");
