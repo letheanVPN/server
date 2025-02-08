@@ -1,8 +1,8 @@
 // src/devices/android/service.ts
 import { join } from "jsr:@std/path";
 import * as fflate from "npm:fflate@^0.8.0";
-import { ensureDirSync  } from "@std/fs";
-import { InvokeADBOptions, Device } from "../interfaces.ts"; // Corrected import
+import { ensureDirSync  } from "jsr:@std/fs";
+import { InvokeADBOptions, Device } from "../interfaces.ts";
 
 export class DevicesAndroidService implements Device{
 
@@ -160,7 +160,13 @@ export class DevicesAndroidService implements Device{
         }
         return devices;
     }
+    async installApk(apkPath: string, options?: InvokeADBOptions): Promise<string> {
+        return this.invokeADB(options, "install", apkPath);
+    }
 
+    async uninstallApk(packageName: string, options?: InvokeADBOptions): Promise<string> {
+        return this.invokeADB(options, "uninstall", packageName);
+    }
     async setupAndroidEnvironment(downloadPath?: string | null) {
         downloadPath ??= this.defaultADBPath();
         const platformToolsPath = join(downloadPath, "platform-tools");

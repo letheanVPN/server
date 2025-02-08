@@ -1,8 +1,9 @@
-// test.ts
+// src/devices/android/test.ts
 import { DevicesAndroidService } from "./service.ts";
-import { join } from "@std/path/join";
+import { join } from "@std/path";
 import { assertEquals, assertRejects, assertStringIncludes, assert } from '@std/assert';
-import { ensureDirSync  } from "@std/fs/ensure-dir";
+import { ensureDirSync, ensureFileSync  } from "@std/fs";
+
 const androidService = new DevicesAndroidService();
 const testDownloadPath = join(Deno.cwd(), "test_adb");
 
@@ -65,10 +66,7 @@ Deno.test({
     name: 'Android - devices returns device list',
     async fn() {
         const devices = androidService.devices();
-        // We can't assert specific devices without a connected device, but we can check the *type*.
         assertEquals(typeof devices, "object", "Devices should return an object.");
-        // If you *do* have a device connected, you could add:
-        // assert(Object.keys(devices).length > 0, "Should return at least one device if connected.");
     }
 });
 
@@ -82,7 +80,7 @@ Deno.test({
         const serial = Object.keys(devices)[0];
         if (!serial) {
             console.warn("Skipping invokeADB serial test: No device connected.");
-            return; // Skip the test if no device.
+            return;
         }
 
         const output = androidService.invokeADB({ serial }, "shell", "pwd");
@@ -192,4 +190,36 @@ Deno.test('Android - invokeADB handles command failure', () => {
     const output = androidService.invokeADB({ downloadPath: testDownloadPath }, "invalid-command");
 
     assertStringIncludes(output.toLowerCase(), "unknown command", "Error output should indicate command failure.");
+});
+
+Deno.test({
+    name: 'Android - installApk and uninstallApk',
+    async fn() {
+        const devices = androidService.devices();
+        const serial = Object.keys(devices)[0];
+        if (!serial) {
+            console.warn("Skipping installApk/uninstallApk test: No device connected.");
+            return;
+        }
+
+        // Create a dummy APK file (it doesn't need to be a *real* APK for this test).
+        const testApkPath = join(testDownloadPath, "test.apk");
+        ensureFileSync(testApkPath)
+        Deno.writeTextFileSync(testApkPath, "This is a dummy APK file."); // Minimal content
+
+        const testPackageName = "com.example.testapp"; // A *likely* unused package name
+
+        // 1. Install the APK.
+        const installOutput = await androidService.installApk(testApkPath, { serial });
+        console.log(installOutput)
+        assertStringIncludes(installOutput.toLowerCase(), "success", "Install should report success.");
+
+        // 2. Uninstall the APK.
+        const uninstallOutput = await androidService.uninstallApk(testPackageName, { serial });
+        console.log(uninstallOutput)
+        assertStringIncludes(uninstallOutput.toLowerCase(), "success", "Uninstall should report success.");
+
+        //Clean up
+        Deno.removeSync(testApkPath);
+    },
 });
