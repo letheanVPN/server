@@ -1,14 +1,10 @@
-import { join } from "@std/path/join";
-import { dirname } from "@std/path/dirname";
+// src/devices/android/service.ts
+import { join } from "jsr:@std/path";
 import * as fflate from "npm:fflate@^0.8.0";
-import { ensureDirSync  } from "@std/fs/ensure-dir";
-import {InvokeADBOptions} from "./interfaces.ts";
+import { ensureDirSync  } from "@std/fs";
+import { InvokeADBOptions, Device } from "../interfaces.ts"; // Corrected import
 
-/**
- * Original code comes from: https://deno.land/x/adb_deno@0.1.5
- * I've made it work under Deno V2, and making framework integrations.
- */
-export class DevicesAndroidService {
+export class DevicesAndroidService implements Device{
 
     protected adbDownloadURL =
         "https://dl.google.com/android/repository/platform-tools-latest-";
@@ -41,7 +37,6 @@ export class DevicesAndroidService {
 
     fixDevicePath(p: string) {
         if (!p.startsWith("/")) p = `/${p}`;
-
         return `"${p}"`;
     }
 
@@ -57,7 +52,7 @@ export class DevicesAndroidService {
             args = ["-s", options?.serial, ...args];
         }
 
-        const process = new Deno.Command(adbPath,{
+        const process = new Deno.Command(adbPath, {
             args: args,
             stdout: "piped",
             stderr: "piped",
@@ -79,14 +74,17 @@ export class DevicesAndroidService {
 
         const archiveRequest = await fetch(this.downloadURL);
 
-        if (!archiveRequest.ok)
-            throw new Error(`Unable to download ${archiveRequest} at ${this.downloadURL}. ${archiveRequest.status} ${archiveRequest.statusText}`);
+        if (!archiveRequest.ok) {
+            throw new Error(
+                `Unable to download ${archiveRequest} at ${this.downloadURL}. ${archiveRequest.status} ${archiveRequest.statusText}`,
+            );
+        }
 
         const array = new Uint8Array(await archiveRequest.arrayBuffer());
         const decompressed = fflate.unzipSync(array, {});
 
         for (const [name, data] of Object.entries(decompressed)) {
-            if(name === "platform-tools/"){
+            if (name === "platform-tools/") {
                 ensureDirSync(join(downloadPath, "platform-tools"));
                 continue;
             }
@@ -110,7 +108,7 @@ export class DevicesAndroidService {
     downloadFile(
         devicePath: string,
         hostPath: string,
-        options?: InvokeADBOptions
+        options?: InvokeADBOptions,
     ) {
         return this.invokeADB(options, "pull", devicePath, hostPath);
     }
@@ -118,34 +116,34 @@ export class DevicesAndroidService {
     uploadFile(
         devicePath: string,
         hostPath: string,
-        options?: InvokeADBOptions
+        options?: InvokeADBOptions,
     ) {
         return this.invokeADB(options, "push", hostPath, devicePath);
     }
 
     mkdir(
         devicePath: string,
-        options?: InvokeADBOptions
+        options?: InvokeADBOptions,
     ) {
         return this.invokeADB(options, "shell", `mkdir -p ${this.fixDevicePath(devicePath)}`);
     }
 
     rm(
         devicePath: string,
-        options?: InvokeADBOptions
+        options?: InvokeADBOptions,
     ) {
         return this.invokeADB(options, "shell", `rm -rf ${this.fixDevicePath(devicePath)}`);
     }
 
     ls(
         devicePath: string,
-        options?: InvokeADBOptions
+        options?: InvokeADBOptions,
     ) {
         return this.invokeADB(options, "shell", `ls ${this.fixDevicePath(devicePath)}`);
     }
 
     devices(
-        options?: InvokeADBOptions
+        options?: InvokeADBOptions,
     ) {
         const output = this.invokeADB(options, "devices");
         const devices: { [device: string]: string } = {};
@@ -153,38 +151,33 @@ export class DevicesAndroidService {
 
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
-            if (line &&!line.startsWith("*")) {
+            if (line && !line.startsWith("*")) {
                 const parts = line.split(/\s+/);
-                const deviceId = parts[0]; // Use the first element
-                const deviceStatus = parts[1].length > 1? parts[1]: "unknown"; // Check if status exists
+                const deviceId = parts[0];
+                const deviceStatus = parts[1].length > 1 ? parts[1] : "unknown";
                 devices[deviceId] = deviceStatus;
             }
         }
-        //return JSON.stringify(devices, null, 2)
-        return devices
+        return devices;
     }
 
     async setupAndroidEnvironment(downloadPath?: string | null) {
         downloadPath ??= this.defaultADBPath();
         const platformToolsPath = join(downloadPath, "platform-tools");
 
-        // Ensure ADB is downloaded.
         await this.downloadADB(downloadPath);
 
-        // Set ANDROID_HOME and ANDROID_SDK_ROOT.  Use the download path.
         Deno.env.set("ANDROID_HOME", downloadPath);
         Deno.env.set("ANDROID_SDK_ROOT", downloadPath);
 
-        // Add platform-tools to PATH.
         const currentPath = Deno.env.get("PATH") || "";
-        let newPath: string
+        let newPath: string;
         if (Deno.build.os === "windows") {
             newPath = `${currentPath};${platformToolsPath};`;
-        }else{
+        } else {
             newPath = `${currentPath}:${platformToolsPath}:`;
         }
         Deno.env.set("PATH", newPath);
-        return {ANDROID_HOME: downloadPath, ANDROID_SDK_ROOT: downloadPath, PATH: newPath}
+        return { ANDROID_HOME: downloadPath, ANDROID_SDK_ROOT: downloadPath, PATH: newPath };
     }
-
 }

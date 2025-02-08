@@ -1,22 +1,23 @@
-// service.ts (Final, Corrected Version)
-import { DevicesAndroidService } from "../android/service.ts";
-import { join } from "@std/path/join";
+// src/servers/appium.ts
+import { DevicesAndroidService } from "../devices/android/service.ts"; // Import DeviceService
+import { join } from "jsr:@std/path";
 import { remote, RemoteOptions, Browser } from 'npm:webdriverio@^8.27.0';
-import { delay } from "@std/async/delay";
-import { getAvailablePort } from 'jsr:@std/net';
+import { delay } from "jsr:@std/async/delay";
+import { DeviceService } from "../devices/service.ts";
+import { getAvailablePort } from 'jsr:@std/net'; // Import getAvailablePort
 
-export class DevicesAppiumService {
+export class ServersAppiumService {
     private appiumProcess: Deno.ChildProcess | undefined;
-    private androidService: DevicesAndroidService;
+    private deviceService: DeviceService; // Use DeviceService
     private downloadPath: string;
     private stdoutReader: ReadableStreamDefaultReader<Uint8Array> | undefined;
     private stderrReader: ReadableStreamDefaultReader<Uint8Array> | undefined;
-    port: number; // Add a port property
+    port: number;
 
-    constructor(androidService: DevicesAndroidService, downloadPath: string) {
-        this.androidService = androidService;
-        this.downloadPath = downloadPath;
-        this.port = 4723; // Default port, will be overridden if unavailable
+    constructor(deviceService: DeviceService, downloadPath: string) {
+        this.deviceService = deviceService; // Use DeviceService
+        this.downloadPath = downloadPath
+        this.port = 4723
     }
     async isPortInUse(port: number): Promise<boolean> {
         try {
@@ -36,16 +37,27 @@ export class DevicesAppiumService {
     async startServer(): Promise<void> {
         // Find an available port, starting with the default (4723).
         this.port = await getAvailablePort({ preferredPort: this.port });
-        console.log("Using Appium port:", this.port);
+        //console.log("Using Appium port:", this.port);
 
-        const env = await this.androidService.setupAndroidEnvironment(this.downloadPath);
-        console.log("Environment:", env);
+        // Check if the assigned port is *still* in use, and wait if necessary.
+        const maxWaitTime = 30000; // 30 seconds
+        const startTime = Date.now();
+        while (await this.isPortInUse(this.port)) {
+            console.warn(`Port ${this.port} is in use, waiting...`);
+            await delay(1000); // Wait 1 second
+            if (Date.now() - startTime > maxWaitTime) {
+                throw new Error(`Port ${this.port} remained in use for too long.`);
+            }
+        }
 
+        // Use the DeviceService to set up the environment.  This is more flexible.
+        const env = await this.deviceService.getDeviceService("android").setupAndroidEnvironment(this.downloadPath);
+        //console.log("Environment:", env);
         let stdoutPromise: Promise<void> | undefined;
         let stderrPromise: Promise<void> | undefined;
         try {
             const command = new Deno.Command("appium", {
-                args: [`--port`, `${this.port}`], // Pass the port to Appium
+                args: [`--port`, `${this.port}`], // Use the assigned port
                 env: env,
                 stdout: "piped",
                 stderr: "piped",
@@ -65,7 +77,7 @@ export class DevicesAppiumService {
                             break;
                         }
                         const output = new TextDecoder().decode(value);
-                        console.log("Appium stdout:", output);
+                        //console.log("Appium stdout:", output);
                         if (output.includes("Appium REST http interface listener started")) {
                             appiumStarted = true;
                         }
@@ -93,8 +105,8 @@ export class DevicesAppiumService {
             })();
 
             const timeout = 60000; // 60 seconds timeout
-            const startTime = Date.now();
-            while (!appiumStarted && Date.now() - startTime < timeout) {
+            const startTimeAppium = Date.now();
+            while (!appiumStarted && Date.now() - startTimeAppium < timeout) {
                 await delay(500); // Check every 500ms
             }
 
@@ -158,18 +170,17 @@ export class DevicesAppiumService {
             this.stderrReader = undefined
         }
     }
-
     async waitForDeviceReady(serial?: string): Promise<void> {
         const timeout = 60000; // 60-second timeout
         const startTime = Date.now();
-
+        const androidService = this.deviceService.getDeviceService("android")
         while (Date.now() - startTime < timeout) {
             try {
                 // Check if sys.boot_completed is 1.
-                const bootCompletedOutput = this.androidService.invokeADB({ serial }, "shell", "getprop", "sys.boot_completed").trim();
+                const bootCompletedOutput = androidService.invokeADB({ serial }, "shell", "getprop", "sys.boot_completed").trim();
                 if (bootCompletedOutput === '1') {
                     //check menu button works
-                    this.androidService.invokeADB({ serial }, "shell", "input", "keyevent", "82")
+                    androidService.invokeADB({ serial }, "shell", "input", "keyevent", "82")
                     return; // Device is ready!
                 }
             } catch (error) {
@@ -191,20 +202,21 @@ export class DevicesAppiumService {
         };
 
         const maxRetries = 3;
-        const retryDelay = 2000;
+        const retryDelay = 2000; // 2 seconds
 
         for (let i = 0; i < maxRetries; i++) {
             try {
-                return await remote(wdOpts);
+                return await remote(wdOpts); // Return directly on success
             } catch (error) {
                 if (error instanceof Error && error.message.includes("connection error") && i < maxRetries - 1) {
                     console.warn(`Connection attempt ${i + 1} failed. Retrying in ${retryDelay / 1000} seconds...`);
                     await delay(retryDelay);
                 } else {
+                    // Re-throw if it's not a connection error, or if we've reached max retries.
                     throw error;
                 }
             }
         }
-        throw new Error("Get driver failed") //Should never get here
+        throw new Error("Get driver failed") //should never get here
     }
 }
