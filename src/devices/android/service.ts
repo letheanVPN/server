@@ -13,7 +13,7 @@ export class DevicesAndroidService {
     protected adbDownloadURL =
         "https://dl.google.com/android/repository/platform-tools-latest-";
     protected archiveName = `${Deno.build.os}.zip`;
-    protected downloadURL = `${this.adbDownloadURL}${this.archiveName}`;
+    public downloadURL = `${this.adbDownloadURL}${this.archiveName}`;
 
     configDir(): string | null {
         switch (Deno.build.os) {
@@ -53,8 +53,6 @@ export class DevicesAndroidService {
         const downloadPath = options?.downloadPath ?? this.defaultADBPath();
         const adbPath = this.getADBBinary(downloadPath);
 
-        // We execute the command
-        // The function returns details about the spawned process
         if (options?.serial !== undefined) {
             args = ["-s", options?.serial, ...args];
         }
@@ -65,20 +63,24 @@ export class DevicesAndroidService {
             stderr: "piped",
         });
 
-        return new TextDecoder().decode(process.outputSync().stdout);
+        const output = process.outputSync();
+        const stdout = new TextDecoder().decode(output.stdout);
+        const stderr = new TextDecoder().decode(output.stderr);
+
+        if (output.code !== 0) {
+            return stderr;
+        }
+
+        return stdout;
     }
 
     async downloadADB(downloadPath?: string | null) {
         downloadPath ??= this.defaultADBPath();
 
-
-        // console.log(`Downloading ADB to ${downloadPath}`);
-        // windows/darwin/linux
-
         const archiveRequest = await fetch(this.downloadURL);
 
         if (!archiveRequest.ok)
-            throw `Unable to download ${archiveRequest} at ${this.downloadURL}. ${archiveRequest.status} ${archiveRequest.statusText}`;
+            throw new Error(`Unable to download ${archiveRequest} at ${this.downloadURL}. ${archiveRequest.status} ${archiveRequest.statusText}`);
 
         const array = new Uint8Array(await archiveRequest.arrayBuffer());
         const decompressed = fflate.unzipSync(array, {});
@@ -88,10 +90,8 @@ export class DevicesAndroidService {
                 ensureDirSync(join(downloadPath, "platform-tools"));
                 continue;
             }
-            // console.log(`Extracting ${name}`);
 
             const finalPath = join(downloadPath, name);
-            // console.log(`Writing ${finalPath}`);
             await Deno.writeFile(finalPath, data);
         }
 
@@ -112,7 +112,7 @@ export class DevicesAndroidService {
         hostPath: string,
         options?: InvokeADBOptions
     ) {
-        return this.invokeADB(options, "pull", this.fixDevicePath(devicePath), hostPath);
+        return this.invokeADB(options, "pull", devicePath, hostPath);
     }
 
     uploadFile(
@@ -120,7 +120,7 @@ export class DevicesAndroidService {
         hostPath: string,
         options?: InvokeADBOptions
     ) {
-        return this.invokeADB(options, "push", hostPath, this.fixDevicePath(devicePath));
+        return this.invokeADB(options, "push", hostPath, devicePath);
     }
 
     mkdir(
