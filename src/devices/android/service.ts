@@ -164,4 +164,27 @@ export class DevicesAndroidService {
         return devices
     }
 
+    async setupAndroidEnvironment(downloadPath?: string | null) {
+        downloadPath ??= this.defaultADBPath();
+        const platformToolsPath = join(downloadPath, "platform-tools");
+
+        // Ensure ADB is downloaded.
+        await this.downloadADB(downloadPath);
+
+        // Set ANDROID_HOME and ANDROID_SDK_ROOT.  Use the download path.
+        Deno.env.set("ANDROID_HOME", downloadPath);
+        Deno.env.set("ANDROID_SDK_ROOT", downloadPath);
+
+        // Add platform-tools to PATH.
+        const currentPath = Deno.env.get("PATH") || "";
+        let newPath: string
+        if (Deno.build.os === "windows") {
+            newPath = `${currentPath};${platformToolsPath};`;
+        }else{
+            newPath = `${currentPath}:${platformToolsPath}:`;
+        }
+        Deno.env.set("PATH", newPath);
+        return {ANDROID_HOME: downloadPath, ANDROID_SDK_ROOT: downloadPath, PATH: newPath}
+    }
+
 }
