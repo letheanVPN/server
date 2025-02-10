@@ -2,7 +2,7 @@
     "option": {
         "debug": "Activer le mode débug",
         "dev": "Activer le Mode Développeur (fonctionne seulement si exécuté depuis une source non compilée)",
-        "port-listen": "Port à l'écoute.",
+        "port-listen": "Port à l'écoute",
         "log-level": "Niveau de traçage, par défaut: info. Valeurs possibles: debug, info, warn, error"
     },
     "command": {
